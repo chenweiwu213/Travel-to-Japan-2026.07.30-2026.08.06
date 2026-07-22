@@ -100,9 +100,9 @@ section.block{margin:22px 0;}
 }
 .boarding .city{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--indigo-deep);}
 .boarding .city-name{font-size:11px;color:var(--ink-soft);margin-top:2px;}
-.boarding .mid{flex:1;text-align:center;position:relative;padding:0 6px;}
-.boarding .mid .plane{font-size:10px;color:var(--seal);letter-spacing:.1em;}
-.boarding .mid::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px dashed var(--line);}
+.boarding .mid{flex:1;text-align:center;position:relative;padding:0 6px;align-self:stretch;display:flex;align-items:flex-start;justify-content:center;}
+.boarding .mid .plane{font-size:10px;color:var(--seal);letter-spacing:.1em;position:relative;z-index:1;background:var(--card);padding:0 4px;margin-top:2px;}
+.boarding .mid::before{content:"";position:absolute;left:0;right:0;bottom:6px;border-top:1.5px dashed var(--line);}
 .boarding .flight-meta{font-size:11px;color:var(--ink-soft);margin-top:10px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;}
 .boarding-label{font-size:10.5px;letter-spacing:.12em;color:var(--seal);font-weight:700;margin-bottom:8px;}
 
@@ -866,7 +866,12 @@ const PHRASES = [
   "這個多少錢？",
   "可以刷卡嗎？",
   "麻煩幫我加熱一下",
-  "請問這班車有到博多站嗎？"
+  "請問這班車有到博多站嗎？",
+  "請問可以拍照嗎？",
+  "請問可以幫我拍照嗎？",
+  "請問可以試穿嗎？",
+  "我想看一下這件商品",
+  "請問可以寄放行李嗎？"
 ];
 const phraseListEl = document.getElementById('phraseList');
 phraseListEl.innerHTML = PHRASES.map((p,i)=>`<div class="hl phrase-item" data-idx="${i}"><div class="hl-name">${p}</div></div>`).join('');
