@@ -172,15 +172,18 @@ section.block{margin:22px 0;}
 
 .tabbar{
   position:fixed;bottom:0;left:0;right:0;
-  display:flex;background:var(--indigo-deep);
+  display:flex;justify-content:center;background:var(--indigo-deep);
   border-top:1px solid rgba(239,233,216,0.15);
   padding:6px 4px calc(env(safe-area-inset-bottom) + 6px);
   z-index:50;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
 }
 .tab{
-  flex:1;background:none;border:none;color:#8FA0B3;
+  flex:0 0 auto;min-width:64px;background:none;border:none;color:#8FA0B3;
   display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:6px 2px;font-family:'Noto Sans TC',sans-serif;font-size:10.5px;
+  padding:6px 6px;font-family:'Noto Sans TC',sans-serif;font-size:10.5px;
+  white-space:nowrap;
 }
 .tab.active{color:var(--gold-pale);}
 .tab .ic{font-size:18px;}
@@ -233,6 +236,33 @@ section.block{margin:22px 0;}
 .conv-swap{display:flex;justify-content:center;margin:6px 0;color:var(--ink-soft);font-size:16px;}
 
 .note{font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:6px;}
+
+textarea.conv-input{resize:vertical;font-family:'Noto Sans TC',sans-serif;font-weight:400;line-height:1.6;}
+
+.weather-select{margin-bottom:14px;}
+.weather-now{
+  background:var(--indigo-deep);border-radius:12px;padding:16px 18px;color:var(--paper);
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;
+}
+.weather-now-temp{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:600;}
+.weather-now-icon{font-size:32px;}
+.weather-now-meta{font-size:11.5px;color:#B9C6D4;margin-top:4px;}
+.weather-hour-scroll{display:flex;overflow-x:auto;gap:8px;padding-bottom:6px;-webkit-overflow-scrolling:touch;}
+.weather-hour-item{
+  flex:0 0 auto;min-width:58px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:10px 6px;text-align:center;
+}
+.weather-hour-item.now{border-color:var(--indigo-deep);background:rgba(31,45,71,0.06);}
+.wh-time{font-size:10.5px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
+.wh-icon{font-size:20px;margin:5px 0;}
+.wh-temp{font-size:12.5px;font-weight:600;color:var(--indigo-deep);}
+.wh-rain{font-size:10px;color:#2E6FA3;font-family:'JetBrains Mono',monospace;margin-top:2px;}
+.output-box{
+  width:100%;min-height:56px;padding:12px;border:1px solid var(--line);border-radius:8px;
+  font-size:15px;line-height:1.7;color:var(--indigo-deep);background:var(--paper);white-space:pre-wrap;
+}
+.phrase-item{cursor:pointer;}
+.phrase-item:active{opacity:.7;}
 </style>
 </head>
 <body>
@@ -315,6 +345,21 @@ section.block{margin:22px 0;}
 
 </div>
 
+<div class="view" id="view-weather">
+  <section class="block" style="margin-top:6px">
+    <div class="block-title"><h2>目的地天氣</h2><span class="en">hourly forecast</span></div>
+    <div class="card weather-select">
+      <div class="form-row">
+        <select id="weatherSpot"></select>
+      </div>
+    </div>
+    <div id="weatherContent">
+      <div class="empty">請選擇要查詢的地點</div>
+    </div>
+    <div class="note">天氣資料來源為 Open-Meteo 公開氣象 API，逐小時預報僅供旅行參考，實際天氣請以出發前最新預報為準。</div>
+  </section>
+</div>
+
 <div class="view" id="view-itinerary">
   <section class="block" style="margin-top:6px">
     <div class="block-title"><h2>每日行程</h2><span class="en">day by day</span></div>
@@ -387,11 +432,29 @@ section.block{margin:22px 0;}
   </section>
 </div>
 
+<div class="view" id="view-translate">
+  <section class="block" style="margin-top:6px">
+    <div class="block-title"><h2>中翻日小幫手</h2><span class="en">zh → ja</span></div>
+    <div class="conv-box">
+      <div class="conv-label">中文</div>
+      <textarea id="zhInput" class="conv-input" style="height:88px;font-size:15px;" placeholder="輸入想翻譯的中文句子…"></textarea>
+      <button class="btn-primary" id="translateBtn" style="margin-top:10px;">翻譯成日文</button>
+      <div class="conv-label" style="margin-top:14px;">日文</div>
+      <div class="output-box" id="jaOutput">－</div>
+    </div>
+    <div class="hl-title">旅行常用短句（點一下自動翻譯）</div>
+    <div id="phraseList"></div>
+    <div class="note">翻譯結果來自公開翻譯服務，僅供旅行溝通參考，正式或重要場合請以專業翻譯為準。</div>
+  </section>
+</div>
+
 <div class="tabbar">
   <button class="tab active" data-view="overview"><span class="ic">🗺️</span>總覽</button>
   <button class="tab" data-view="itinerary"><span class="ic">📅</span>行程</button>
   <button class="tab" data-view="ledger"><span class="ic">💴</span>記帳</button>
   <button class="tab" data-view="rate"><span class="ic">💱</span>匯率</button>
+  <button class="tab" data-view="weather"><span class="ic">🌤️</span>天氣</button>
+  <button class="tab" data-view="translate"><span class="ic">🈺</span>翻譯</button>
 </div>
 
 <script type="module">
@@ -656,6 +719,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     tab.classList.add('active');
     document.getElementById('view-'+tab.dataset.view).classList.add('active');
     if(tab.dataset.view==='ledger'){ startLedgerListener(); }
+    if(tab.dataset.view==='weather'){ initWeatherTab(); }
   });
 });
 
@@ -795,6 +859,170 @@ jpyInput.addEventListener('input', syncFromJPY);
 twdInput.addEventListener('input', syncFromTWD);
 jpyInput.value = 10000;
 syncFromJPY();
+
+/* ===================== 中翻日翻譯功能 ===================== */
+const PHRASES = [
+  "請問洗手間在哪裡？",
+  "這個多少錢？",
+  "可以刷卡嗎？",
+  "麻煩幫我加熱一下",
+  "請問這班車有到博多站嗎？"
+];
+const phraseListEl = document.getElementById('phraseList');
+phraseListEl.innerHTML = PHRASES.map((p,i)=>`<div class="hl phrase-item" data-idx="${i}"><div class="hl-name">${p}</div></div>`).join('');
+phraseListEl.querySelectorAll('.phrase-item').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const idx = el.dataset.idx;
+    document.getElementById('zhInput').value = PHRASES[idx];
+    document.getElementById('translateBtn').click();
+  });
+});
+
+/* ===================== 翻譯後端設定 ===================== */
+// 部署完 Cloudflare Worker 後，把下面換成你自己的 Worker 網址
+// 例如：https://travel-translate.你的帳號.workers.dev
+const TRANSLATE_WORKER_URL = "travel-translate.www112233345.workers.dev";
+
+async function translateZhToJa(text){
+  // 優先使用自建的 DeepL 後端（品質較好）
+  if(TRANSLATE_WORKER_URL && !TRANSLATE_WORKER_URL.includes('YOUR-WORKER-NAME')){
+    try{
+      const res = await fetch(TRANSLATE_WORKER_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({text})
+      });
+      if(res.ok){
+        const data = await res.json();
+        if(data && data.translation) return data.translation;
+      }
+    }catch(e){
+      // Worker 呼叫失敗，往下 fallback 到 MyMemory
+    }
+  }
+  // 備援方案：MyMemory（免金鑰，但品質較不穩定）
+  const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-TW|ja`);
+  const data = await res.json();
+  if(data && data.responseData && data.responseData.translatedText){
+    return data.responseData.translatedText;
+  }
+  throw new Error('translate failed');
+}
+
+document.getElementById('translateBtn').addEventListener('click', async ()=>{
+  const text = document.getElementById('zhInput').value.trim();
+  const output = document.getElementById('jaOutput');
+  if(!text){ output.textContent = '請先輸入中文內容'; return; }
+  output.textContent = '翻譯中…';
+  try{
+    const result = await translateZhToJa(text);
+    output.textContent = result;
+  }catch(e){
+    output.textContent = '翻譯失敗，請確認網路連線後再試一次。';
+  }
+});
+
+/* ===================== 目的地天氣功能 ===================== */
+const WEATHER_SPOTS = [
+  {name:"福岡（博多）", lat:33.5904, lon:130.4017},
+  {name:"門司港", lat:33.9486, lon:130.9631},
+  {name:"小倉", lat:33.8834, lon:130.8751},
+  {name:"皿倉山", lat:33.8677, lon:130.8323},
+  {name:"太宰府", lat:33.5216, lon:130.5347},
+  {name:"糸島", lat:33.5487, lon:130.1972},
+  {name:"廣島", lat:34.3853, lon:132.4553},
+  {name:"嚴島（宮島）", lat:34.2969, lon:132.3197},
+  {name:"神戶", lat:34.6901, lon:135.1955},
+  {name:"大阪", lat:34.6937, lon:135.5023},
+];
+
+// WMO 天氣代碼對照表（Open-Meteo 使用此標準）
+const WEATHER_CODE_MAP = {
+  0:"☀️", 1:"🌤️", 2:"⛅", 3:"☁️",
+  45:"🌫️", 48:"🌫️",
+  51:"🌦️", 53:"🌦️", 55:"🌦️",
+  56:"🌧️", 57:"🌧️",
+  61:"🌧️", 63:"🌧️", 65:"🌧️",
+  66:"🌧️", 67:"🌧️",
+  71:"🌨️", 73:"🌨️", 75:"🌨️", 77:"🌨️",
+  80:"🌦️", 81:"🌧️", 82:"⛈️",
+  85:"🌨️", 86:"🌨️",
+  95:"⛈️", 96:"⛈️", 99:"⛈️",
+};
+function weatherIcon(code){ return WEATHER_CODE_MAP[code] || "🌡️"; }
+
+let weatherTabInited = false;
+const weatherSpotSel = document.getElementById('weatherSpot');
+weatherSpotSel.innerHTML = WEATHER_SPOTS.map((s,i)=>`<option value="${i}">${s.name}</option>`).join('');
+weatherSpotSel.addEventListener('change', ()=>{
+  loadWeather(WEATHER_SPOTS[weatherSpotSel.value]);
+});
+
+function initWeatherTab(){
+  if(weatherTabInited) return;
+  weatherTabInited = true;
+  loadWeather(WEATHER_SPOTS[weatherSpotSel.value]);
+}
+
+async function loadWeather(spot){
+  const content = document.getElementById('weatherContent');
+  content.innerHTML = '<div class="empty">正在取得天氣資料…</div>';
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${spot.lat}&longitude=${spot.lon}&hourly=temperature_2m,precipitation_probability,weathercode&timezone=Asia%2FTokyo&forecast_days=1`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('weather fetch failed');
+    const data = await res.json();
+    renderWeather(spot, data);
+  }catch(e){
+    content.innerHTML = '<div class="empty">天氣資料取得失敗，請確認網路連線後再試一次。</div>';
+  }
+}
+
+function renderWeather(spot, data){
+  const content = document.getElementById('weatherContent');
+  const h = data.hourly;
+  if(!h || !h.time || h.time.length===0){
+    content.innerHTML = '<div class="empty">目前查無此地點的天氣資料。</div>';
+    return;
+  }
+  const nowHour = new Date().getHours();
+  let nowIdx = h.time.findIndex(t=>parseInt(t.slice(11,13),10)===nowHour);
+  if(nowIdx<0) nowIdx = 0;
+
+  const nowTemp = Math.round(h.temperature_2m[nowIdx]);
+  const nowRain = h.precipitation_probability[nowIdx];
+  const nowIcon = weatherIcon(h.weathercode[nowIdx]);
+  const dateLabel = h.time[nowIdx].slice(0,10);
+
+  let html = `
+    <div class="weather-now">
+      <div>
+        <div class="weather-now-temp">${nowTemp}°C</div>
+        <div class="weather-now-meta">${spot.name}・${dateLabel}・現在降雨機率 ${nowRain}%</div>
+      </div>
+      <div class="weather-now-icon">${nowIcon}</div>
+    </div>
+    <div class="hl-title">逐小時預報</div>
+    <div class="weather-hour-scroll">
+  `;
+  for(let i=0; i<h.time.length; i++){
+    const hourLabel = h.time[i].slice(11,16);
+    const temp = Math.round(h.temperature_2m[i]);
+    const rain = h.precipitation_probability[i];
+    const icon = weatherIcon(h.weathercode[i]);
+    const isNow = i===nowIdx ? 'now' : '';
+    html += `
+      <div class="weather-hour-item ${isNow}">
+        <div class="wh-time">${isNow?'現在':hourLabel}</div>
+        <div class="wh-icon">${icon}</div>
+        <div class="wh-temp">${temp}°</div>
+        <div class="wh-rain">💧${rain}%</div>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  content.innerHTML = html;
+}
 </script>
 </body>
 </html>
