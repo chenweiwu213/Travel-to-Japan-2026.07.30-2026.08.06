@@ -881,7 +881,7 @@ phraseListEl.querySelectorAll('.phrase-item').forEach(el=>{
 /* ===================== 翻譯後端設定 ===================== */
 // 部署完 Cloudflare Worker 後，把下面換成你自己的 Worker 網址
 // 例如：https://travel-translate.你的帳號.workers.dev
-const TRANSLATE_WORKER_URL = "travel-translate.www112233345.workers.dev";
+const TRANSLATE_WORKER_URL = "https://travel-translate.www112233345.workers.dev";
 
 async function translateZhToJa(text){
   // 優先使用自建的 DeepL 後端（品質較好）
