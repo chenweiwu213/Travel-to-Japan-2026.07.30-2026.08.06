@@ -154,6 +154,11 @@ section.block{margin:22px 0;}
 .t-row{display:flex;gap:10px;padding:6px 0;font-size:12.5px;line-height:1.55;}
 .t-time{font-family:'JetBrains Mono',monospace;color:var(--seal);font-weight:700;flex-shrink:0;width:44px;}
 .t-desc{color:var(--ink);}
+.t-map{
+  display:inline-flex;align-items:center;gap:4px;font-size:11px;margin-top:4px;
+  color:var(--indigo);background:var(--indigo-pale);border:none;border-radius:14px;
+  padding:3px 9px;text-decoration:none;font-family:'Noto Sans TC',sans-serif;font-weight:500;
+}
 .t-sub{color:var(--ink-soft);}
 
 .hl-title{font-size:11.5px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin:16px 0 8px;font-weight:700;}
@@ -187,6 +192,7 @@ section.block{margin:22px 0;}
 }
 .tab.active{color:var(--gold-pale);}
 .tab .ic{font-size:18px;}
+a.tab{text-decoration:none;}
 
 .form-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
 .form-row input,.form-row select{
@@ -455,6 +461,7 @@ textarea.conv-input{resize:vertical;font-family:'Noto Sans TC',sans-serif;font-w
   <button class="tab" data-view="rate"><span class="ic">💱</span>匯率</button>
   <button class="tab" data-view="weather"><span class="ic">🌤️</span>天氣</button>
   <button class="tab" data-view="translate"><span class="ic">🈺</span>翻譯</button>
+  <a class="tab" href="https://japantravel.navitime.com/zh-tw/area/jp/depArrTimeList" target="_blank" rel="noopener"><span class="ic">🚉</span>JR時刻</a>
 </div>
 
 <script type="module">
@@ -512,7 +519,7 @@ const DAYS = [
     ["14:00","旦過市場品嚐關東煮；小倉城庭園體驗茶道（10:00-16:00）"],
     ["15:00","小倉城・小倉城庭園（9:00-20:00）"],
     ["17:27","小倉→八幡　JR鹿兒島主線區間快速 往久留米（5番月台）"],
-    ["18:05","JR八幡駅接駁巴士上皿倉山"],
+    ["18:05","JR八幡駅接駁巴士上皿倉山",{label:"接駁巴士位置", q:"皿倉山ケーブルカー無料シャトルバス乗降場"}],
     ["19:00","晚餐：天宮 TEN・KYU（11:00-21:00，最後點餐20:30）"],
     ["20:55","接駁巴士下皿倉山"],
     ["21:29","八幡→小倉　JR鹿兒島本線 往門司港"],
@@ -555,7 +562,7 @@ const DAYS = [
   route:"博多 → 白絲瀑布 → 二見浦 → 一蘭之森 → 宗像大社 → 宮地嶽神社 → 廣島",
   timeline:[
     ["07:00","飯店 check out，博多車站寄放行李"],
-    ["08:20","博多站筑紫口 Oriental Hotel 一樓集合"],
+    ["08:20","博多站筑紫口 Oriental Hotel 一樓LAWSON前集合",{label:"集合地點", q:"ローソン オリエンタルホテル福岡店"}],
     ["09:30","白絲瀑布：糸島山區清涼溪谷景緻"],
     ["10:40","櫻井二見浦夫婦岩：海上鳥居經典打卡點"],
     ["11:50","ヤシの木ブランコ 棕櫚樹鞦韆，沿岸拍照休憩"],
@@ -691,7 +698,7 @@ dayList.innerHTML = DAYS.map((d,i)=>`
   </div>
   <div class="day-body"><div class="day-body-inner">
     <div class="timeline">
-      ${d.timeline.map(t=>`<div class="t-row"><div class="t-time">${t[0]}</div><div class="t-desc">${t[1]}</div></div>`).join('')}
+      ${d.timeline.map(t=>`<div class="t-row"><div class="t-time">${t[0]}</div><div class="t-desc">${t[1]}${t[2]?`<br><a class="t-map" href="${mapUrl(t[2].q)}" target="_blank" rel="noopener">📍 ${t[2].label}</a>`:''}</div></div>`).join('')}
     </div>
     <div class="hl-title">本日重點景點</div>
     ${d.highlights.map(h=>`
@@ -712,7 +719,7 @@ function toggleDay(i){
 window.toggleDay = toggleDay;
 document.querySelector('.day-card[data-idx="0"]').classList.add('open');
 
-document.querySelectorAll('.tab').forEach(tab=>{
+document.querySelectorAll('.tab[data-view]').forEach(tab=>{
   tab.addEventListener('click', ()=>{
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
