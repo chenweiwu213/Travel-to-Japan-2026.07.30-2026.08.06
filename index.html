@@ -464,19 +464,16 @@ textarea.conv-input{resize:vertical;font-family:'Noto Sans TC',sans-serif;font-w
   <a class="tab" href="https://japantravel.navitime.com/zh-tw/area/jp/depArrTimeList" target="_blank" rel="noopener"><span class="ic">🚉</span>JR時刻</a>
 </div>
 
+<script src="firebase-config.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAt9bwXSg6H1wSjfJplOVrI8MCmYN3LLC4",
-  authDomain: "travel-to-japan-0730-0806.firebaseapp.com",
-  projectId: "travel-to-japan-0730-0806",
-  storageBucket: "travel-to-japan-0730-0806.firebasestorage.app",
-  messagingSenderId: "88568101166",
-  appId: "1:88568101166:web:001bee54e238745c9da2bf",
-  measurementId: "G-85FWYTRPH0"
-};
+// firebaseConfig 從外部檔案 firebase-config.js 載入（該檔案已加入 .gitignore，不會進版控）
+const firebaseConfig = window.__FIREBASE_CONFIG__;
+if (!firebaseConfig) {
+  console.error('找不到 Firebase 設定，請確認 firebase-config.js 是否存在並已載入。');
+}
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 const expensesCol = collection(db, 'expenses');
